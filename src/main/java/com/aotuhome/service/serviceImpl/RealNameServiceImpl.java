@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 @Service
@@ -60,10 +61,24 @@ public class RealNameServiceImpl implements RealNameService {
         }else if("post".equalsIgnoreCase(requestParams.getRequestType().trim())){
             ResponseParam responseParam = new ResponseParam();
             SortedMap sortedMap = getRequestProperty.getBody(requestBody, isSing, isTimetamp, map);
-            if ("html/text".equalsIgnoreCase(hashMap.get("Content-Type").trim()) || hashMap.get("Content-Type").isEmpty() || hashMap.get("Content-Type").length() == 0) {
+            if ("application/x-www-form-urlencoded".equalsIgnoreCase(hashMap.get("Content-Type").trim()) || hashMap.get("Content-Type").isEmpty() || hashMap.get("Content-Type").length() == 0) {
                 List list = HttpClientDriver.formPost(url, sortedMap, hashMap);
                 responseParam.setCode(list.get(0).toString());
                 responseParam.setMessage(list.get(1).toString());
+                return responseParam;
+            }else if("application/json".equalsIgnoreCase(hashMap.get("Content-Type").trim())){
+                List list = null;
+                try {
+                    list = HttpClientDriver.httpPost(url, sortedMap, hashMap);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                responseParam.setCode(list.get(0).toString());
+                responseParam.setMessage(list.get(1).toString());
+                return responseParam;
+            }else {
+                responseParam.setCode("250");
+                responseParam.setMessage("还TM没实现");
                 return responseParam;
             }
         }

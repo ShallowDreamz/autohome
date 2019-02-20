@@ -1,6 +1,5 @@
 package com.aotuhome.dto;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class RequestParams {
@@ -13,7 +12,33 @@ public class RequestParams {
     private String requestType;
     private List<ParamList> requestHeader;
     private List<ParamList> requestBody;
-    private String testName;
+    private String codeName;
+    private String check;
+    private String except;
+
+    public String getCodeName() {
+        return codeName;
+    }
+
+    public void setCodeName(String codeName) {
+        this.codeName = codeName;
+    }
+
+    public String getCheck() {
+        return check;
+    }
+
+    public void setCheck(String check) {
+        this.check = check;
+    }
+
+    public String getExcept() {
+        return except;
+    }
+
+    public void setExcept(String except) {
+        this.except = except;
+    }
 
     public String getRequestUrl() {
         return requestUrl;
@@ -87,14 +112,6 @@ public class RequestParams {
         this.requestBody = requestBody;
     }
 
-    public String getTestName() {
-        return testName;
-    }
-
-    public void setTestName(String testName) {
-        this.testName = testName;
-    }
-
     @Override
     public String toString() {
         return "RequestParams{" +
@@ -107,7 +124,9 @@ public class RequestParams {
                 ", requestType='" + requestType + '\'' +
                 ", requestHeader=" + requestHeader +
                 ", requestBody=" + requestBody +
-                ", testName='" + testName + '\'' +
+                ", codeName='" + codeName + '\'' +
+                ", check='" + check + '\'' +
+                ", except='" + except + '\'' +
                 '}';
     }
 }
