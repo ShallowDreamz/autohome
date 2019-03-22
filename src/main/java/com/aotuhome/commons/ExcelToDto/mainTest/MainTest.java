@@ -14,12 +14,12 @@ import java.util.SortedMap;
 
 public class MainTest {
     public static void main(String[] args) throws IOException, IllegalAccessException, InstantiationException, InvalidFormatException {
-        File f = new File("E:\\upload\\zzhtestdata1.xlsx");
+        File f = new File("E:\\upload\\zhb.xlsx");
         ExcelToDto e = new ExcelToDto();
         //System.out.println(e.readExcel(f, ExcelDto.class));
         List<ExcelDto> list = e.readExcel(f, ExcelDto.class);
         BatchParameterNormalization parameterNormalization = new BatchParameterNormalization();
-        HashMap<String,String> map = parameterNormalization.paramOverWrite(list.get(0).getParameters());
+        HashMap<String,String> map = parameterNormalization.paramOverWrite(list.get(0).getRequestBody());
         for(Map.Entry entry : map.entrySet()){
             System.out.println(entry.getKey() + "=" + entry.getValue());
         }

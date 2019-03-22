@@ -18,17 +18,14 @@
 		<property name="suffix" value=".html" />
 		<!--<property name="contentType" value="text/html"></property>-->
 	</bean>
-	<!--<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-		<property name="templateLoaderPath" value="/WEB-INF/HTML/"/>
-		<property name="defaultEncoding" value="utf-8"/>
-		<property name="freemarkerSettings">
-			<props>
-				<prop key="default_encoding">UTF-8</prop>
-				<prop key="output_encoding">UTF-8</prop>
-				<prop key="number_format">#</prop>
-			</props>
-		</property>
-	</bean>-->
+	<!--<mvc:resources mapping="/asset/**" location="/WEB-INF/static/asset/" cache-period="2592000">
+		<mvc:resource-chain resource-cache="false" auto-registration="false">
+			<mvc:resolvers>
+				<bean class="org.springframework.web.servlet.resource.GzipResourceResolver"/>
+				<bean class="org.springframework.web.servlet.resource.PathResourceResolver"/>
+			</mvc:resolvers>
+		</mvc:resource-chain>
+	</mvc:resources>-->
 	<!-- 配置文件上传组件 -->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="defaultEncoding" value="utf-8" />

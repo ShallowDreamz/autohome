@@ -1,8 +1,8 @@
 package com.aotuhome.service;
 
 import com.aotuhome.commons.ExcelToDto.dto.ExcelDto;
-import com.aotuhome.dto.ResponseParam;
+import com.aotuhome.dto.BatchResponseBody;
 
 public interface BatchProcessingService {
-    public ResponseParam excelBatchService(ExcelDto excelDto);
+    BatchResponseBody excelBatchService(ExcelDto excelDto);
 }

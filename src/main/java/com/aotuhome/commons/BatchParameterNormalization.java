@@ -1,5 +1,7 @@
 package com.aotuhome.commons;
 
+import com.alibaba.fastjson.JSONObject;
+import com.aotuhome.commons.ExcelToDto.dto.ExcelDto;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,5 +71,10 @@ public class BatchParameterNormalization {
         }
         return null;
     }
-
+    public String isPassed(ExcelDto excelDto,String response){
+        String exceptCode = excelDto.getExpect();
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        String realCode = jsonObject.getString("returnCode");
+        return exceptCode.equals(realCode)?"通过":"失败";
+    }
 }

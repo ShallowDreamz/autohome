@@ -4,15 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aotuhome.commons.ExcelToDto.dto.ExcelDto;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
@@ -135,6 +134,54 @@ public class ExcelUtil {
      */
     private boolean printMsg = PRINT_MSG;
 
+    public List<ExcelDto> excelToDTO(String path, Class<ExcelDto> clazz) throws IllegalAccessException, InstantiationException, IOException, InvalidFormatException {
+        List<ExcelDto> result = new ArrayList();
+        FileInputStream fis = new FileInputStream(path);
+        Workbook workbook = WorkbookFactory.create(fis);
+        //对excel文档的第一页,即sheet1进行操作
+        Sheet sheet = workbook.getSheetAt(0);
+        int lastRaw = sheet.getLastRowNum();
+        for (int i = 1; i <= lastRaw; i++) {
+            //第i行
+            Row row = sheet.getRow(i);
+            ExcelDto requestExcelParam = clazz.newInstance();
+            Field[] fields = clazz.getDeclaredFields();
+            for (int k = 0; k < fields.length; k++) {
+                Field field = fields[k];
+                field.setAccessible(true);
+                Class<?> type = field.getType();
+                Cell cell = row.getCell(k);
+                if (cell == null)
+                    continue;
+                cell.setCellType(Cell.CELL_TYPE_STRING);
+                String cellContent = cell.getStringCellValue();
+                cellContent = "".equals(cellContent) ? "0" : cellContent;
+                if (type.equals(String.class)) {
+                    field.set(requestExcelParam, cellContent);
+                } else if (type.equals(char.class) || type.equals(Character.class)) {
+                    field.set(requestExcelParam, cellContent.charAt(0));
+                } else if (type.equals(int.class) || type.equals(Integer.class)) {
+                    field.set(requestExcelParam, Integer.parseInt(cellContent));
+                } else if (type.equals(long.class) || type.equals(Long.class)) {
+                    field.set(requestExcelParam, Long.parseLong(cellContent));
+                } else if (type.equals(float.class) || type.equals(Float.class)) {
+                    field.set(requestExcelParam, Float.parseFloat(cellContent));
+                } else if (type.equals(double.class) || type.equals(Double.class)) {
+                    field.set(requestExcelParam, Double.parseDouble(cellContent));
+                } else if (type.equals(short.class) || type.equals(Short.class)) {
+                    field.set(requestExcelParam, Short.parseShort(cellContent));
+                } else if (type.equals(byte.class) || type.equals(Byte.class)) {
+                    field.set(requestExcelParam, Byte.parseByte(cellContent));
+                } else if (type.equals(boolean.class) || type.equals(Boolean.class)) {
+                    field.set(requestExcelParam, Boolean.parseBoolean(cellContent));
+                }
+            }
+            result.add(requestExcelParam);
+        }
+        fis.close();
+        return result;
+    }
+
     public List<String> getExcelCells(String path) throws IOException {
         setExcelPath(path);
         List<Row> list = readExcel();
@@ -151,7 +198,7 @@ public class ExcelUtil {
     public static void main(String[] args) {
         try {
             ExcelUtil eu = new ExcelUtil();
-            eu.setExcelPath("E:\\upload\\zzhtestdata1.xlsx");
+            eu.setExcelPath("E:\\upload\\zhb.xlsx");
             System.out.println("=======测试Excel 默认 读取========");
             List<Row> list = eu.readExcel();
             List list1 = new ArrayList();
@@ -536,14 +583,14 @@ public class ExcelUtil {
                 row = sheet.getRow(i);
                 if (row != null) {
                     rowList.add(row);
-                    out("第"+(i+1)+"行：",false);
+                    //out("第"+(i+1)+"行：",false);
                     // 获取每一单元格的值
-                    for (int j = 0; j < row.getLastCellNum(); j++) {
+                   /* for (int j = 0; j < row.getLastCellNum(); j++) {
                         String value = getCellValue(row.getCell(j));
                         if (!value.equals("")) {
-                            out(value + " | ",false);
+                            //out(value + " | ",false);
                         }
-                    }
+                    }*/
                     out("");
                 }
             }

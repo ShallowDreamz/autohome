@@ -195,5 +195,29 @@
 <script type="text/javascript" src="layui/layui.js"></script>
 <script type="text/javascript" src="icheck/icheck.js"></script>
 <script type="text/javascript" src="javascript/dw.js"></script>
+
+<script  type="text/javascript">
+    $.ajax({
+        url: "/aotuhome/read?path="+ encodeURIComponent ("E:\\upload\\zhb.xlsx") ,
+        // contentType: "application/x-www-form-urlencoded",
+        type:'GET',
+        success: function( data  ){
+            var $table = $(".layui-table");
+
+            var resStr = "";
+            $.each(data , function (i , n ) {
+                var tr = "<tr>\n" +
+                    "                      <td><div class=\"icheckbox_minimal-red\" style=\"position: relative;\"><input type=\"checkbox\" name=\"id\" value=\"1\" style=\"position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;\"><ins class=\"iCheck-helper\" style=\"position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;\"></ins></div></td>\n" +
+                    "                      <td>"+ n.message.returnCode +"</td>\n" +
+                    "                      <td>" + n.message.returnMessage+ "</td>\n" +
+                    "                      <td>人生就像是一场修行</td>\n" +
+                    "                      <td class=\"text-center\">1111111111111</td>\n" +
+                    "                      </tr>";
+                // $table.append(tr)
+                resStr += "第"+ i +"行元素为" +n.message;
+            });
+            alert(resStr);
+        }});
+</script>
 </body>
 </html>

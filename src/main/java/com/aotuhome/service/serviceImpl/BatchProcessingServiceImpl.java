@@ -3,8 +3,10 @@ package com.aotuhome.service.serviceImpl;
 import com.aotuhome.commons.BatchParameterNormalization;
 import com.aotuhome.commons.ExcelToDto.dto.ExcelDto;
 import com.aotuhome.commons.HttpClientDriver;
+import com.aotuhome.dto.BatchResponseBody;
 import com.aotuhome.dto.ResponseParam;
 import com.aotuhome.service.BatchProcessingService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,46 +21,70 @@ public class BatchProcessingServiceImpl implements BatchProcessingService {
     @Autowired
     private BatchParameterNormalization batchParameterNormalization;
     @Override
-    public ResponseParam excelBatchService(ExcelDto excelDto) {
+    public BatchResponseBody excelBatchService(ExcelDto excelDto) {
         String url = excelDto.getRequestUrl();
         String headers = excelDto.getRequestHeader();
         String isSing = excelDto.getIsSign();
         String isTimetamp = excelDto.getIs_timestamp();
-        String requestBody = excelDto.getParameters();
+        String requestBody = excelDto.getRequestBody();
         HashMap<String,String> headerMap = batchParameterNormalization.paramOverWrite(headers);
         HashMap <String,String>BodyMap = batchParameterNormalization.paramOverWrite(requestBody);
         BodyMap.put("_appid", excelDto.get_appid());
         BodyMap.put("sign_method", excelDto.getSign_method());
         BodyMap.put("format", excelDto.getFormat());
         if ("get".equalsIgnoreCase(excelDto.getRequestType().trim())) {
-            ResponseParam responseParam = new ResponseParam();
+            BatchResponseBody batchResponseBody = new BatchResponseBody();
             String host = batchParameterNormalization.getExcelURL(BodyMap, url, isSing, isTimetamp, headerMap);
+            long startTime = System.currentTimeMillis();
             List list = HttpClientDriver.httpGet(host, headerMap);
-            responseParam.setCode(list.get(0).toString());
-            responseParam.setMessage(list.get(1).toString());
-            return responseParam;
+            long endTime = System.currentTimeMillis();
+            batchResponseBody.setCode(list.get(0).toString());
+            batchResponseBody.setMessage(list.get(1).toString());
+            batchResponseBody.setCaseId(excelDto.getId());
+            batchResponseBody.setCaseName(excelDto.getCaseName());
+            batchResponseBody.setRequestParam(StringUtils.replace(excelDto.getRequestBody(),"\n",""));
+            batchResponseBody.setExpected(excelDto.getExpect());
+            batchResponseBody.setResponseTime(endTime - startTime);
+            batchResponseBody.setIsPass(batchParameterNormalization.isPassed(excelDto,list.get(1).toString()));
+            return batchResponseBody;
         }else if("post".equalsIgnoreCase(excelDto.getRequestType().trim())){
-            ResponseParam responseParam = new ResponseParam();
+            BatchResponseBody batchResponseBody = new BatchResponseBody();
             SortedMap sortedMap = batchParameterNormalization.getExcelBody(BodyMap, isSing, isTimetamp, headerMap);
             if ("application/x-www-form-urlencoded".equalsIgnoreCase(headerMap.get("Content-Type").trim()) || headerMap.get("Content-Type").isEmpty() || headerMap.get("Content-Type").length() == 0) {
+                long startTime = System.currentTimeMillis();
                 List list = HttpClientDriver.formPost(url, sortedMap, headerMap);
-                responseParam.setCode(list.get(0).toString());
-                responseParam.setMessage(list.get(1).toString());
-                return responseParam;
+                long endTime = System.currentTimeMillis();
+                batchResponseBody.setCaseId(excelDto.getId());
+                batchResponseBody.setCaseName(excelDto.getCaseName());
+                batchResponseBody.setIsPass(batchParameterNormalization.isPassed(excelDto,list.get(1).toString()));
+                batchResponseBody.setExpected(excelDto.getExpect());
+                batchResponseBody.setRequestParam(StringUtils.replace(excelDto.getRequestBody(),"\n",""));
+                batchResponseBody.setResponseTime(endTime - startTime);
+                batchResponseBody.setCode(list.get(0).toString());
+                batchResponseBody.setMessage(list.get(1).toString());
+                return batchResponseBody;
             }else if("application/json".equalsIgnoreCase(headerMap.get("Content-Type").trim())){
                 List list = null;
+                long startTime = System.currentTimeMillis();
                 try {
                     list = HttpClientDriver.httpPost(url, sortedMap, headerMap);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                responseParam.setCode(list.get(0).toString());
-                responseParam.setMessage(list.get(1).toString());
-                return responseParam;
+                long endTime = System.currentTimeMillis();
+                batchResponseBody.setCaseId(excelDto.getId());
+                batchResponseBody.setCode(list.get(0).toString());
+                batchResponseBody.setCaseName(excelDto.getCaseName());
+                batchResponseBody.setExpected(excelDto.getExpect());
+                batchResponseBody.setResponseTime(endTime - startTime);
+                batchResponseBody.setRequestParam(StringUtils.replace(excelDto.getRequestBody(),"\n",""));
+                batchResponseBody.setIsPass(batchParameterNormalization.isPassed(excelDto,list.get(1).toString()));
+                batchResponseBody.setMessage(list.get(1).toString());
+                return batchResponseBody;
             }else {
-                responseParam.setCode("250");
-                responseParam.setMessage("还TM没实现");
-                return responseParam;
+                batchResponseBody.setCode("250");
+                batchResponseBody.setMessage("还TM没实现");
+                return batchResponseBody;
             }
         }
         return null;

@@ -18,6 +18,7 @@ com\aotuhome\commons\BatchParameterNormalization.class
 com\aotuhome\commons\ExcelToDto\ExcelInterface\ExcelColunm.class
 com\aotuhome\commons\ExcelToDto\dto\ExcelDto.class
 com\aotuhome\dto\ResponseParam.class
+com\aotuhome\commons\HttpMailTemplete.class
 com\aotuhome\web\controller\RealNameController.class
 com\aotuhome\service\BatchProcessingService.class
 com\aotuhome\dto\RequestHeader.class

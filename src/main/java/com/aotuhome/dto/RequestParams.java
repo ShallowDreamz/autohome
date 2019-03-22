@@ -1,43 +1,45 @@
 package com.aotuhome.dto;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.List;
 
+@Data
+@ToString
+@Setter
+@Getter
 public class RequestParams {
+    private Integer id;
+    private String caseName;
     private String requestUrl;
-    private String _appid;
     private String is_timestamp;
     private String isSign;
+    private String _appid;
     private String sign_method;
     private String format;
     private String requestType;
     private List<ParamList> requestHeader;
     private List<ParamList> requestBody;
-    private String codeName;
     private String check;
     private String except;
 
-    public String getCodeName() {
-        return codeName;
+    public Integer getId() {
+        return id;
     }
 
-    public void setCodeName(String codeName) {
-        this.codeName = codeName;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getCheck() {
-        return check;
+    public String getCaseName() {
+        return caseName;
     }
 
-    public void setCheck(String check) {
-        this.check = check;
-    }
-
-    public String getExcept() {
-        return except;
-    }
-
-    public void setExcept(String except) {
-        this.except = except;
+    public void setCaseName(String caseName) {
+        this.caseName = caseName;
     }
 
     public String getRequestUrl() {
@@ -46,14 +48,6 @@ public class RequestParams {
 
     public void setRequestUrl(String requestUrl) {
         this.requestUrl = requestUrl;
-    }
-
-    public String get_appid() {
-        return _appid;
-    }
-
-    public void set_appid(String _appid) {
-        this._appid = _appid;
     }
 
     public String getIs_timestamp() {
@@ -70,6 +64,14 @@ public class RequestParams {
 
     public void setIsSign(String isSign) {
         this.isSign = isSign;
+    }
+
+    public String get_appid() {
+        return _appid;
+    }
+
+    public void set_appid(String _appid) {
+        this._appid = _appid;
     }
 
     public String getSign_method() {
@@ -112,19 +114,36 @@ public class RequestParams {
         this.requestBody = requestBody;
     }
 
+    public String getCheck() {
+        return check;
+    }
+
+    public void setCheck(String check) {
+        this.check = check;
+    }
+
+    public String getExcept() {
+        return except;
+    }
+
+    public void setExcept(String except) {
+        this.except = except;
+    }
+
     @Override
     public String toString() {
         return "RequestParams{" +
-                "requestUrl='" + requestUrl + '\'' +
-                ", _appid='" + _appid + '\'' +
+                "id=" + id +
+                ", caseName='" + caseName + '\'' +
+                ", requestUrl='" + requestUrl + '\'' +
                 ", is_timestamp='" + is_timestamp + '\'' +
                 ", isSign='" + isSign + '\'' +
+                ", _appid='" + _appid + '\'' +
                 ", sign_method='" + sign_method + '\'' +
                 ", format='" + format + '\'' +
                 ", requestType='" + requestType + '\'' +
                 ", requestHeader=" + requestHeader +
                 ", requestBody=" + requestBody +
-                ", codeName='" + codeName + '\'' +
                 ", check='" + check + '\'' +
                 ", except='" + except + '\'' +
                 '}';
